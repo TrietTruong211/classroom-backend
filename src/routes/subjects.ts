@@ -8,28 +8,32 @@ const router = express.Router()
 router.get("/", async (req, res) => {
   try {
     const {search, department, page = 1, limit = 10} = req.query
-    const currentPage = Math.max(1, +page);
-    const limitPerPage = Math.max(1, +limit);
+    const currentPage = Math.max(1, parseInt(page as string, 10) || 1);
+    const limitPerPage = Math.max(1, Math.min(100, parseInt(limit as string, 10) || 10));
     const offset = (currentPage - 1) * limitPerPage;
 
-    const filterCOnditions = []
+    // Input validation
+    const searchTerm = typeof search === 'string' ? search.trim().slice(0, 100) : undefined;
+    const departmentCode = typeof department === 'string' ? department.trim().slice(0, 50) : undefined;
 
-    if (search) {
-      filterCOnditions.push(
+    const filterConditions = []
+
+    if (searchTerm && searchTerm.length > 0) {
+      filterConditions.push(
         or (
-          ilike(subjects.name, `%${search}%`),
-          ilike(subjects.code, `%${search}%`)
+          ilike(subjects.name, `%${searchTerm}%`),
+          ilike(subjects.code, `%${searchTerm}%`)
         )
       )
     }
 
-    if (department) {
-      filterCOnditions.push(
-        ilike(departments.name, `%${department}%`)
+    if (departmentCode && departmentCode.length > 0) {
+      filterConditions.push(
+        eq(departments.code, departmentCode)
       )
     }
 
-    const whereClause = filterCOnditions.length > 0 ? and(...filterCOnditions) : undefined
+    const whereClause = filterConditions.length > 0 ? and(...filterConditions) : undefined
 
     const countResult = await db
       .select({ count: sql<number>`count(*)` })
