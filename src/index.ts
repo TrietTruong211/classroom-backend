@@ -1,5 +1,9 @@
-import AgentAPI from "apminsight";
-AgentAPI.config()
+try {
+  const AgentAPI = await import("apminsight");
+  AgentAPI.default.config();
+} catch (e) {
+  console.warn("apminsight failed to load, skipping APM:", (e as Error).message);
+}
 
 import "dotenv/config";
 import express from "express";
@@ -13,7 +17,7 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 if (!process.env.FRONTEND_URL) {
-  throw new Error("FRONTEND_URL is not set in .env file");
+  console.warn("WARNING: FRONTEND_URL is not set in environment variables");
 }
 
 app.use(cors({
@@ -35,4 +39,9 @@ app.get("/", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || "not set"}`);
+  console.log(`FRONTEND_URL: ${process.env.FRONTEND_URL ? "set" : "MISSING"}`);
+  console.log(`DATABASE_URL: ${process.env.DATABASE_URL ? "set" : "MISSING"}`);
+  console.log(`BETTER_AUTH_SECRET: ${process.env.BETTER_AUTH_SECRET ? "set" : "MISSING"}`);
+  console.log(`ARCJET_KEY: ${process.env.ARCJET_KEY ? "set" : "MISSING"}`);
 });
