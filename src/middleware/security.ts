@@ -44,7 +44,7 @@ const securityMiddleware = async (req: Request, res: Response, next: NextFunctio
       socket: {remoteAddress: req.socket.remoteAddress ?? req.ip ?? '0.0.0.0'}
     };
 
-    const decision = await client.protect(arcjetRequest);
+    const decision = await client.protect(arcjetRequest, { requested: 1 });
 
     // if (decision.isDenied() && decision.reason.isBot()) {
     //   return res.status(403).json({ error: 'Forbidden', message: 'Automated requests are not allowed' });
