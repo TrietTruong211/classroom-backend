@@ -15,6 +15,13 @@
       "when": 1773987461946,
       "tag": "0001_brown_pixie",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774051006400,
+      "tag": "0002_quick_darkhawk",
+      "breakpoints": true
     }
   ]
 }
