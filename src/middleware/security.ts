@@ -13,19 +13,19 @@ const securityMiddleware = async (req: Request, res: Response, next: NextFunctio
 
     switch (role) {
       case "admin":
-        limit = 100; // High limit for admins
+        limit = 1000; // High limit for admins
         message = "Admin rate limit exceeded. Please try again later.";
         break;
       case "teacher":
-        limit = 20; // Moderate limit for teachers
+        limit = 200; // Moderate limit for teachers
         message = "Teacher rate limit exceeded. Please try again later.";
         break;
       case "student":
-        limit = 10; // Low limit for students
+        limit = 100; // Low limit for students
         message = "Student rate limit exceeded. Please try again later.";
         break;
       default:
-        limit = 5; // Very low limit for guests
+        limit = 50; // Very low limit for guests
         message = "Guest rate limit exceeded. Please try again later.";
     }
 
